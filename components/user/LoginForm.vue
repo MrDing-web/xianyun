@@ -25,21 +25,24 @@
     name: "LoginForm",
     data() {
       return {
-        phoneNum: '',
-        password:''
+        phoneNum: '13800138000',
+        password: '123456'
       }
     },
-    methods:{
-      login(){
+    methods: {
+      login() {
         this.$axios({
-          url:"/accounts/login",
-          method:"post",
-          data:{
-            username:this.phoneNum,
-            password:this.password
+          url: "/accounts/login",
+          method: "post",
+          data: {
+            username: this.phoneNum,
+            password: this.password
           }
-        }).then(res=>{
-          console.log(res);
+        }).then(res => {
+          if (res.status === 200) {
+            this.$message.success("登录成功");
+            this.$store.commit('user/setUserInfo', res.data);
+          }
         })
       }
     }
@@ -47,15 +50,17 @@
 </script>
 
 <style lang="less" scoped>
-  .loginContainer{
+  .loginContainer {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    padding:0 24px 24px 24px;
-    .input{
+    padding: 0 24px 24px 24px;
+
+    .input {
       margin-top: 24px;
     }
-    .forgetPwd{
+
+    .forgetPwd {
       width: 100%;
       font-size: 12px;
       margin: 24px 0 10px 0;
@@ -63,7 +68,8 @@
       color: #40aaff;
       justify-content: flex-end;
     }
-    .login{
+
+    .login {
       width: 100%;
     }
   }

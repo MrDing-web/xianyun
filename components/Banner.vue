@@ -7,7 +7,6 @@
     <el-carousel-item
       v-for="(item, index) in banners"
       :key="index">
-      {{item.url}}
       <div class="banner-image"
            :style="`
                 background:url(${item.url}) center center no-repeat;
@@ -52,5 +51,6 @@
   .banner-image {
     width: 100%;
     height: 100%;
+    background-size: 100%;
   }
 </style>
