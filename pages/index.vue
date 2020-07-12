@@ -72,7 +72,13 @@
         }
         this.currentOption = index;
       },
-      handleSearch(){}
+      handleSearch(){
+        if(this.currentOption===0){
+          this.$router.push("/post?city=" + this.searchValue);
+        }else if(this.currentOption===1){
+          this.$router.push("/hotel?hotel=" + this.searchValue);
+        }
+      }
     },
   }
 </script>

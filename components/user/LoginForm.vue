@@ -1,9 +1,9 @@
 <template>
   <div class="loginContainer">
     <el-input
-      placeholder="请输入用户名"
-      v-model="username"
-      class="input username"
+      placeholder="请输入手机号"
+      v-model="phoneNum"
+      class="input phoneNum"
       clearable>
     </el-input>
     <el-input
@@ -16,7 +16,7 @@
     <div class="forgetPwd">
       <a href="javascript:void(0)">忘记密码</a>
     </div>
-    <el-button type="primary" class="login">登录</el-button>
+    <el-button type="primary" class="login" @click="login">登录</el-button>
   </div>
 </template>
 
@@ -25,8 +25,22 @@
     name: "LoginForm",
     data() {
       return {
-        username: '',
+        phoneNum: '',
         password:''
+      }
+    },
+    methods:{
+      login(){
+        this.$axios({
+          url:"/accounts/login",
+          method:"post",
+          data:{
+            username:this.phoneNum,
+            password:this.password
+          }
+        }).then(res=>{
+          console.log(res);
+        })
       }
     }
   }

@@ -29,8 +29,8 @@
   </div>
 </template>
 <script>
-  import LoginForm from '~/components/LoginForm'
-  import RegisterForm from '~/components/RegisterForm'
+  import LoginForm from '~/components/user/LoginForm'
+  import RegisterForm from '~/components/user/RegisterForm'
   export default {
     name: "index",
     components: {

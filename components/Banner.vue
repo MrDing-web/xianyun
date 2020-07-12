@@ -7,11 +7,13 @@
     <el-carousel-item
       v-for="(item, index) in banners"
       :key="index">
+      {{item.url}}
       <div class="banner-image"
            :style="`
                 background:url(${item.url}) center center no-repeat;
                 background-size:contain contain;
                 `">
+
       </div>
     </el-carousel-item>
   </el-carousel>
@@ -25,7 +27,7 @@
         banners: []
       }
     },
-    created() {
+    mounted() {
       this.$axios({
         url: "/scenics/banners"
       }).then(res => {
@@ -36,6 +38,7 @@
             url: this.$axios.defaults.baseURL + item.url
           }
         })
+        // console.log(this.banners);
       })
     },
   }
