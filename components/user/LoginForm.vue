@@ -2,13 +2,13 @@
   <div class="loginContainer">
     <el-input
       placeholder="请输入手机号"
-      v-model="phoneNum"
+      v-model="form.phoneNum"
       class="input phoneNum"
       clearable>
     </el-input>
     <el-input
       placeholder="请输入密码"
-      v-model="password"
+      v-model="form.password"
       class="input password"
       clearable
       show-password>
@@ -25,8 +25,41 @@
     name: "LoginForm",
     data() {
       return {
-        phoneNum: '13800138000',
-        password: '123456'
+        form:{
+          phoneNum: '13800138000',
+          password: '123456'
+        },
+        //表单规则
+        // rules 里面的每个属性都对应数据对象里面的 key, 都是一个数组
+        // 数组里面的对象是一条条的规则, 这些规则会按顺序进行校验
+        // 假如我现在要求用户名必须填写, 而且是3到5个字符
+        rules: {
+          username: [
+            {
+              required: true,
+              message: '请输入用户名',
+              trigger: 'blur'
+            },
+            {
+              min:6,
+              max:15,
+              message:"用户名在6到15个字符之间",
+              trigger: "blur"
+            },
+            {
+              pattern:"/^\d$/",
+              message: "用户名只能输入数字",
+              trigger: "blur"
+            }
+          ],
+          password:[
+            {
+              required: true,
+              message:"请输入密码",
+              trigger:"blur"
+            }
+          ]
+    }
       }
     },
     methods: {
@@ -46,7 +79,8 @@
         })
       }
     }
-  }
+  };
+
 </script>
 
 <style lang="less" scoped>
