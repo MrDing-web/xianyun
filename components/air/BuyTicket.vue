@@ -98,7 +98,6 @@ export default {
           name: value
         }
       }).then(res => {
-        console.log(res.data);
         // 我们拿到了res.data.data
         // 但是里面没有 value 值 而是 name 属性
         const suggestions = res.data.data.map(city => {
@@ -135,10 +134,8 @@ export default {
 
     // 出发城市下拉选择时触发
     handleDepartSelect(item) {
-      console.log(11111111);
       // 建议被选择后,会带上一个被选项 item 对象
       // 将里面的 code 存放到 表单的出发城市代码
-      console.log(item);
       this.form.departCode = item.code;
     },
 
