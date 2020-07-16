@@ -17,7 +17,8 @@
     "less": "^3.11.3",
     "less-loader": "^6.2.0",
     "moment": "^2.27.0",
-    "nuxt": "^2.13.0"
+    "nuxt": "^2.13.0",
+    "vuex-persistedstate": "^3.0.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.0.0",

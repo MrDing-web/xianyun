@@ -155,7 +155,15 @@ export default {
     },
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+      const a = this.form.departCity;
+      const b = this.form.departCode;
+      this.form.departCity = this.form.destCity;
+      this.form.departCode = this.form.destCode;
+      this.form.destCity = a;
+      this.form.destCode = b;
+
+    },
 
     // 提交表单是触发
     handleSubmit() {
@@ -166,8 +174,7 @@ export default {
         query: this.form
       });
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 

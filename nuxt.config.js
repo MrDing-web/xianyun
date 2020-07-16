@@ -36,7 +36,18 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    // '@/plugins/localStorage'
+    // 这种插件引用方法不行, 因为会在 nodejs 端编译时就执行
+    // 但是这个关于本地储存的插件只能在浏览器端运行
+    // 以对象的形式替换之前的字符串声明
+    {
+      // 这个对象中 src 属性就是之前的字符串, 也就是插件文件地址
+      src: '@/plugins/localStorage',
+      // 另外添加一个 ssr 属性设置为 false 就可以禁止这个插件在服务端运行
+      ssr: false
+    },
+    '@/plugins/axios'
   ],
 
   /*

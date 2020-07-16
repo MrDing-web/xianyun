@@ -107,8 +107,6 @@ export default {
                         // 这里可以做进一步的个性化处理
                         // 2. 如果个性化处理需要用到请求的结果
                         // 那么内部 promise 的 .then 函数里面要将数据返回出来
-                        console.log('这里是调用 vuex 内部的 axios 然后返回的 promise 和 结果 res');
-                        console.log(res.data);
                     })
                 }else {
                     // 如果失败, 尝试将 objNotValid 告诉你那个字段失败的信息打印出来

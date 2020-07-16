@@ -32,7 +32,6 @@ export default {
           url: this.$axios.defaults.baseURL + item.url
         };
       });
-      // console.log(this.banners);
     });
   }
 };
