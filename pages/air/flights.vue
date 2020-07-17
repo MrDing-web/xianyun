@@ -53,12 +53,12 @@
             :page-sizes="[1, 5, 8, 12]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="flightsListFilter.length"
+            :total="flightsList.length"
           ></el-pagination>
         </div>
 
         <!-- 航班信息 -->
-        <Ticket :ticket="item" v-for="item in flightsListFilter1" :key="item.id" />
+        <Ticket :ticket="item" v-for="item in flightsListFilter" :key="item.id" />
       </div>
 
       <!-- 侧边栏 -->
@@ -82,6 +82,7 @@ export default {
   data() {
     return {
       flightsList: [],
+      flightsList2: [],
       pageSize:5,
       currentPage: 1,
       airportOption:[],
@@ -129,8 +130,7 @@ export default {
       airVal:"",
       timeVal:"",
       comVal:"",
-      planeVal:"",
-      flightsListFilter:[]
+      planeVal:""
     };
   },
   created() {},
@@ -140,6 +140,7 @@ export default {
       params: this.$route.query,
     }).then(res => {
       this.flightsList = res.data.flights;
+      this.flightsList2 = res.data.flights;
       if(this.flightsList === '') return;
       this.getFiltersOption();
     });
@@ -177,24 +178,26 @@ export default {
     planeSizeFilter(list){
       if(this.planeVal === "") return list;
       return list.filter(item => item.plane_size === this.planeVal);
-    }
+    },
+    getList(){}
   },
   watch:{
+    deep:true,
     airVal(){
-      this.flightsListFilter = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList))));
+      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
     },
     timeVal(){
-      this.flightsListFilter = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList))));
+      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
     },
     comVal(){
-      this.flightsListFilter = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList))));
+      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
     },
     planeVal(){
-      this.flightsListFilter = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList))));
+      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
     }
   },
   computed:{
-    flightsListFilter1(){
+    flightsListFilter(){
       return this.flightsList.slice(this.pageSize * (this.currentPage - 1),this.pageSize * this.currentPage);
     }
   }
