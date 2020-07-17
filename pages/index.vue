@@ -73,7 +73,7 @@ export default {
     handleOption (item, index) {
       // console.log(this.options[index]);
       if (item.name === '机票') {
-        this.$router.push('/air')
+        this.$router.push('/air');
       }
       this.currentOption = index
     },

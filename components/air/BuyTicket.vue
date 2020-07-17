@@ -70,7 +70,7 @@ export default {
       ],
       currentTab: 0,
       form: {
-        departCity: "北京",
+        departCity: "广州",
         departCode: "",
         destCity: "上海",
         destCode: "",

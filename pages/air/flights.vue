@@ -9,8 +9,22 @@
         <!-- 航班头部布局 -->
         <FlightsListHead />
 
+
+        <!--分页插件-->
+        <div>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[1, 5, 8, 12]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="flightsList.length"
+          ></el-pagination>
+        </div>
+
         <!-- 航班信息 -->
-        <Ticket :ticket="item" v-for="item in flightsList" :key="item.id" />
+        <Ticket :ticket="item" v-for="item in filterFlightsList" :key="item.id" />
       </div>
 
       <!-- 侧边栏 -->
@@ -18,17 +32,7 @@
         <!-- 侧边栏组件 -->
       </div>
     </el-row>
-    <div>
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="5"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="flightsList.length"
-      ></el-pagination>
-    </div>
+
   </section>
 </template>
 
@@ -44,44 +48,32 @@ export default {
   data() {
     return {
       flightsList: "",
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      pageSize:5,
+      currentPage: 1
     };
   },
   created() {
     // this.$store.dispatch("/user/login");
   },
   mounted() {
-    // console.log(this.$store.state.user.userInfo.token);
-    //   console.log(this.$route.query);
-    // 现在所有的参数都在 URL 直接发送请求
-    const data = {
-      ...this.$route.query,
-      _start: 0,
-      _limit: 5
-    };
     this.$axios({
       url: "/airs",
-      params: data,
-      headers: {
-        // Authorization:"Bearer " + this.$store.state.user.userInfo.token
-        //报错  node里面没有localStorage
-      //   Authorization:
-      //     "Bearer " +
-      //     JSON.parse(localStorage.getItem("store")).user.userInfo.token
-      }
+      params: this.$route.query,
     }).then(res => {
       this.flightsList = res.data.flights;
     });
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    }
+  },
+  computed:{
+    filterFlightsList(){
+      return this.flightsList.slice(this.pageSize * (this.currentPage - 1),this.pageSize * this.currentPage);
     }
   }
 };
