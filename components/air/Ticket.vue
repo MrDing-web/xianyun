@@ -71,12 +71,19 @@ export default {
       const arrDate = new Date(ticket.arr_datetime).getTime();
       //获取到分钟差
       const airTime = (arrDate - depDate) / 1000 / 60;
+      // if(airTime<0) airTime += 1440;
       const hour = Math.floor(airTime / 60);
       const min = airTime % 60;
-      return `${hour}时${min}分`;
+      // if(min<0 || hour<0){
+      //   hour += 23;
+      //   min += 60;
+      // }
+      return (min<0 || hour<0)?  `${hour+24}时${min+60}分`  :  `${hour}时${min}分`;
     }
   },
-  mounted() {},
+  mounted() {
+    console.log(this.ticket)
+  },
   methods: {
   }
 };

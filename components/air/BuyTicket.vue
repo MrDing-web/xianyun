@@ -70,11 +70,11 @@ export default {
       ],
       currentTab: 0,
       form: {
-        departCity: "",
+        departCity: "北京",
         departCode: "",
-        destCity: "",
+        destCity: "上海",
         destCode: "",
-        departDate: ""
+        departDate: "2020-07-26"
       }
     };
   },
