@@ -92,11 +92,9 @@
         return (min < 0 || hour < 0) ? `${hour + 24}时${min + 60}分` : `${hour}时${min}分`;
       }
     },
-    mounted() {
-      console.log(this.ticket.id);
-    },
     methods:{
       orderTicket(item){
+        this.$store.commit("detailTicket/saveTicket",this.ticket);
         this.$router.push({
           path:"/air/order",
           query:{

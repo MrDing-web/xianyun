@@ -2,8 +2,8 @@
   <div class="aside">
     <div class="air-info">
       <el-row type="flex" justify="space-between" class="info-top">
-        <div>434343</div>
-        <div>34343 - 4343</div>
+        <div>{{detailTicket.dep_date}}</div>
+        <div>{{detailTicket.org_city_name}} - {{detailTicket.dst_city_name}}</div>
       </el-row>
       <el-row
         type="flex"
@@ -11,16 +11,16 @@
         align="middle"
         class="info-step">
         <el-col :span="5" class="flight-airport">
-          <strong>43434</strong>
-          <span>434343</span>
+          <strong>{{detailTicket.dep_time}}</strong>
+          <span>{{detailTicket.org_airport_name}}{{detailTicket.org_airport_quay}}</span>
         </el-col>
         <el-col :span="14" class="flight-time">
-          <span>--- 434343 ---</span>
-          <span>434343</span>
+          <span>--- {{detailTicket | dateFormat}} ---</span>
+          <span>{{detailTicket.airline_name}}{{detailTicket.flight_no}}</span>
         </el-col>
         <el-col :span="5" class="flight-airport">
-          <strong>3434343</strong>
-          <span>浦东机场T2</span>
+          <strong>{{detailTicket.arr_time}}</strong>
+          <span>{{detailTicket.dst_airport_name}}{{detailTicket.dst_airport_quay}}</span>
         </el-col>
       </el-row>
     </div>
@@ -36,7 +36,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
       <span>机建＋燃油</span>
-      <span>¥2222/人/单程</span>
+      <span>¥50/人/单程</span>
       <span>x1</span>
     </el-row>
     <el-row type="flex" justify="space-between" align="middle" class="info-bar">
@@ -48,7 +48,20 @@
 
 <script>
   export default {
-    name: "orderAside"
+    name: "orderAside",
+    props:["detailTicket"],
+    filters: {
+      dateFormat(ticket) {
+        const depDate = new Date(ticket.dep_datetime).getTime();
+        const arrDate = new Date(ticket.arr_datetime).getTime();
+        //获取到分钟差
+        const airTime = (arrDate - depDate) / 1000 / 60;
+        // if(airTime<0) airTime += 1440;
+        const hour = Math.floor(airTime / 60);
+        const min = airTime % 60;
+        return (min < 0 || hour < 0) ? `${hour + 24}时${min + 60}分` : `${hour}时${min}分`;
+      }
+    }
   }
 </script>
 
