@@ -5,7 +5,7 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <div>
-          <span>单程：</span><span>{{$route.query.departCity}}</span> - <span>北京</span> / <span>2020-07-17 </span>
+          <span>单程:</span><span>{{$route.query.departCity}}</span> - <span>{{$route.query.destCity}}</span> /<span> {{$route.query.departDate}} </span>
           <el-select v-model="airVal" placeholder="起飞机场" size="mini" class = "selectInput">
             <el-option
               v-for="item in airportOption"
@@ -155,12 +155,12 @@ export default {
     },
     getFiltersOption(){
       //加载过滤器选项
-      this.airportOption = [...new Set(this.flightsList.map(item =>item.dst_airport_name))].map(i=>({value:i}));
+      this.airportOption = [...new Set(this.flightsList.map(item =>item.org_airport_name))].map(i=>({value:i}));
       this.comOption = [...new Set(this.flightsList.map(item =>item.airline_name))].map(j=>({value:j}))
     },
     departAirportFilter(list){
       if(this.airVal === "") return list;
-      return list.filter(item => item.dst_airport_name === this.airVal);
+      return list.filter(item => item.org_airport_name === this.airVal);
     },
     departTimeFilter(list){
       if(this.timeVal === "") return list;
@@ -179,21 +179,23 @@ export default {
       if(this.planeVal === "") return list;
       return list.filter(item => item.plane_size === this.planeVal);
     },
-    getList(){}
+    getList(){
+      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
+    }
   },
   watch:{
     deep:true,
     airVal(){
-      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
+      this.getList();
     },
     timeVal(){
-      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
+      this.getList();
     },
     comVal(){
-      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
+      this.getList();
     },
     planeVal(){
-      this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
+      this.getList();
     }
   },
   computed:{

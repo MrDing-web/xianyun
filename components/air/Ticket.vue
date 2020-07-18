@@ -11,14 +11,14 @@
           <el-row type="flex" justify="space-between" class="flight-info-center">
             <el-col :span="8" class="flight-airport">
               <strong>{{ticket.dep_time}}</strong>
-              <span>{{ticket.dst_airport_name}}{{ticket.dst_airport_quay}}</span>
+              <span>{{ticket.org_airport_name}}{{ticket.org_airport_quay}}</span>
             </el-col>
             <el-col :span="8" class="flight-time">
               <span>{{ticket|dateFormat}}</span>
             </el-col>
             <el-col :span="8" class="flight-airport">
               <strong>{{ticket.arr_time}}</strong>
-              <span>{{ticket.org_airport_name}}{{ticket.org_airport_quay}}</span>
+              <span>{{ticket.dst_airport_name}}{{ticket.dst_airport_quay}}</span>
             </el-col>
           </el-row>
         </el-col>
