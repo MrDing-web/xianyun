@@ -64,6 +64,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <Aside/>
       </div>
     </el-row>
 
@@ -71,13 +72,14 @@
 </template>
 
 <script>
-import moment from "moment";
 import Ticket from "~/components/air/Ticket";
 import FlightsListHead from "~/components/air/flightsListHead";
+import Aside from "~/components/air/Aside"
 export default {
   components: {
     Ticket,
-    FlightsListHead
+    FlightsListHead,
+    Aside
   },
   data() {
     return {
@@ -135,18 +137,21 @@ export default {
   },
   created() {},
   mounted() {
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query,
-    }).then(res => {
-      this.flightsList = res.data.flights;
-      this.flightsList2 = res.data.flights;
-      if(this.flightsList === '') return;
-      this.getFiltersOption();
-    });
+    this.loadPage();
 
   },
   methods: {
+    loadPage(){
+      this.$axios({
+        url: "/airs",
+        params: this.$route.query,
+      }).then(res => {
+        this.flightsList = res.data.flights;
+        this.flightsList2 = res.data.flights;
+        if(this.flightsList === '') return;
+        this.getFiltersOption();
+      });
+    },
     handleSizeChange(val) {
       this.pageSize = val;
     },
@@ -155,13 +160,17 @@ export default {
     },
     getFiltersOption(){
       //加载过滤器选项
+      //拿到所有数据里面的起飞机场，然后数组去重，得到没有重复的所有起飞机场
       this.airportOption = [...new Set(this.flightsList.map(item =>item.org_airport_name))].map(i=>({value:i}));
+      //拿到所有数据里面的航空公司，然后数组去重，得到没有重复的所有航空公司
       this.comOption = [...new Set(this.flightsList.map(item =>item.airline_name))].map(j=>({value:j}))
     },
+    //通过起飞机场过滤机票列表
     departAirportFilter(list){
       if(this.airVal === "") return list;
       return list.filter(item => item.org_airport_name === this.airVal);
     },
+    //筛选器中的时间格式为（a，b） 通过a<time<b筛选
     departTimeFilter(list){
       if(this.timeVal === "") return list;
       const min = Number(this.timeVal.split(",")[0]);
@@ -171,14 +180,17 @@ export default {
         return depTime >= min && depTime < max;
       })
     },
+    //通过航空公司筛选
     companyFilter(list){
       if(this.comVal === "") return list;
       return list.filter(item => item.airline_name === this.comVal);
     },
+    //通过飞机尺寸筛选
     planeSizeFilter(list){
       if(this.planeVal === "") return list;
       return list.filter(item => item.plane_size === this.planeVal);
     },
+    //过滤器A-->过滤器B-->过滤器C-->过滤器D
     getList(){
       this.flightsList = this.departAirportFilter(this.departTimeFilter(this.companyFilter(this.planeSizeFilter(this.flightsList2))));
     }
@@ -196,6 +208,9 @@ export default {
     },
     planeVal(){
       this.getList();
+    },
+    $route(){
+      this.loadPage();
     }
   },
   computed:{

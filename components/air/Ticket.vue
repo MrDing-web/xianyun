@@ -49,8 +49,9 @@
             </el-col>
             <el-col :span="5" class="price">￥1345</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button :disabled="item.nums === 'A'" type="warning" size="mini" @click="orderTicket(item)">选定</el-button>
               <p v-if="item.nums !== 'A'">剩余：{{item.nums}}</p>
+              <p v-else>剩余：0</p>
             </el-col>
           </el-row>
         </el-col>
@@ -72,7 +73,11 @@
       ticket: {
         type: Object,
         // 默认是空对象
-        default: {}
+        default: () => {
+          return{
+
+          }
+        }
       }
     },
     filters: {
@@ -88,9 +93,19 @@
       }
     },
     mounted() {
-      // console.log(this.ticket)
+      console.log(this.ticket.id);
     },
-    methods: {}
+    methods:{
+      orderTicket(item){
+        this.$router.push({
+          path:"/air/order",
+          query:{
+            id:this.ticket.id,
+            seat_xid:item.seat_xid
+          }
+        })
+      }
+    }
   };
 </script>
 
