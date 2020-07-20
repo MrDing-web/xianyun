@@ -31,7 +31,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
       <span>成人机票</span>
-      <span>￥4444</span>
+      <span>￥{{adultPrice}}</span>
       <span>x1</span>
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
@@ -49,7 +49,7 @@
 <script>
   export default {
     name: "orderAside",
-    props:["detailTicket","totalPrice","userLen"],
+    props:["detailTicket","totalPrice","userLen","adultPrice"],
     filters: {
       dateFormat(ticket) {
         const depDate = new Date(ticket.dep_datetime).getTime();
@@ -61,6 +61,9 @@
         const min = airTime % 60;
         return (min < 0 || hour < 0) ? `${hour + 24}时${min + 60}分` : `${hour}时${min}分`;
       }
+    },
+    mounted() {
+      console.log(this.adultPrice);
     }
   }
 </script>

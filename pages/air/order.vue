@@ -97,7 +97,12 @@
         </div>
       </div>
     </div>
-    <OrderAside :detailTicket="detailTicket" :totalPrice="totalPrice" :userLen="customerList.length"/>
+    <OrderAside
+      :detailTicket="detailTicket"
+      :totalPrice="totalPrice"
+      :userLen="customerList.length"
+      :adultPrice = "adultPrice"
+    />
   </div>
 </template>
 
@@ -135,7 +140,8 @@
         contactPerson:"",
         contactNum:"",
         yanzhengma:"",
-        totalPrice:0
+        // totalPrice:0,
+        adultPrice:0
       }
     },
     created() {
@@ -147,38 +153,37 @@
       }).then(res=>{
         if(res.status === 200){
           this.detailTicket = res.data;
+          this.adultPrice = this.detailTicket.seat_infos.org_settle_price
         }
       })
     },
-    // computed:{},
-    watch:{
-      insuranceList(){
-        this.computedTotalPrice();
-      },
-      customerList:{
-        handler(){
-          this.computedTotalPrice();
-        },
-        immediate:true
-      }
-
-    },
-    // computed:{
-    //   totalPrice(){
-    //     let res = 0;
-    //     // console.log(this.detailTicket);
-    //     if(this.detailTicket.seat_infos){
-    //       res += this.detailTicket.seat_infos.org_settle_price * this.customerList.length;
-    //       this.detailTicket.insurances.forEach(element => {
-    //         if (this.insuranceList.indexOf(element.id) !== -1) {
-    //           res += element.price * this.customerList.length;
-    //         }
-    //       });
-    //       return res;
-    //     }
-    //
+    // watch:{
+    //   insuranceList(){
+    //     this.computedTotalPrice();
     //   },
+    //   customerList:{
+    //     handler(){
+    //       this.computedTotalPrice();
+    //     },
+    //     immediate:true
+    //   }
+    //
     // },
+    computed:{
+      totalPrice(){
+        let res = 0;
+        if(this.detailTicket.seat_infos){
+          res += this.detailTicket.seat_infos.org_settle_price * this.customerList.length;
+          this.detailTicket.insurances.forEach(element => {
+            if (this.insuranceList.indexOf(element.id) !== -1) {
+              res += element.price * this.customerList.length;
+            }
+          });
+          return res;
+        }
+
+      },
+    },
 
     methods: {
       addCustomer() {
@@ -227,15 +232,15 @@
         let res = 0;
         // console.log(this.detailTicket);
         if(this.detailTicket.seat_infos){
-          res += this.detailTicket.seat_infos.org_settle_price * this.customerList.length;
+          res += this.adultPrice * this.customerList.length;
           this.detailTicket.insurances.forEach(element => {
             if (this.insuranceList.indexOf(element.id) !== -1) {
               res += element.price * this.customerList.length;
             }
           });
-          this.totalPrice =  res;
         }
-
+          this.totalPrice =  res;
+        console.log(0)
       }
     }
 
