@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt --open --hot",
+    "dev": "nuxt --open",
     "build": "nuxt build",
     "start": "nuxt start",
     "export": "nuxt export",

@@ -94,7 +94,7 @@
     },
     methods:{
       orderTicket(item){
-        this.$store.commit("detailTicket/saveTicket",this.ticket);
+        this.$store.dispatch("detailTicket/saveTicket",this.ticket)
         this.$router.push({
           path:"/air/order",
           query:{

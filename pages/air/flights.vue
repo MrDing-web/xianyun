@@ -196,7 +196,6 @@ export default {
     }
   },
   watch:{
-    deep:true,
     airVal(){
       this.getList();
     },
