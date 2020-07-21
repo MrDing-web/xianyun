@@ -3,10 +3,19 @@
     <div class="left">
       <div class="air-column">
         <h2>乘机人</h2>
-        <el-form class="member-info">
+        <el-form
+          class="member-info"
+          :model="{customerList}"
+          ref="usersForm"
+        >
           <div class="member-info-item" v-for="(item,index) in customerList">
 
-            <el-form-item label="乘机人类型"><br/>
+            <el-form-item label="乘机人类型"
+                          :prop="`customerList[${index}].username`"
+                          :rules="[
+                              {required:true,message:'请输入乘车人姓名！',trigger:'blur'}
+                            ]"
+            ><br/>
               <el-input
                 placeholder="姓名"
                 class="input-with-select"
@@ -21,7 +30,12 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item label="证件类型"><br/>
+            <el-form-item label="证件类型"
+                          :prop="`customerList[${index}].id`"
+                          :rules="[
+                            {required: true,message: '请输入合法的身份证号码！',trigger:'blur',pattern:/^\d{17}[\d|x]|\d{15}$/}
+                          ]"
+            ><br/>
               <el-input
                 placeholder="证件号码"
                 class="input-with-select"
@@ -31,7 +45,7 @@
                   slot="prepend"
                   value="1"
                   placeholder="请选择">
-                  <el-option label="身份证" value="1" ></el-option>
+                  <el-option label="身份证" value="1"></el-option>
                 </el-select>
               </el-input>
             </el-form-item>
@@ -51,22 +65,19 @@
           <el-checkbox-group v-model="insuranceList">
 
 
-          <div class="insurance-item"
-                v-for="(item,index) in detailTicket.insurances"
-               :key="index"
-          >
-            <el-checkbox
-              :label="item.id"
-              border>
-              {{`${item.type}：￥${item.price}/份×${customerList.length}  最高赔付${item.compensation}`}}
-            </el-checkbox>
-          </div>
-
+            <div class="insurance-item"
+                 v-for="(item,index) in detailTicket.insurances"
+                 :key="index"
+            >
+              <el-checkbox
+                :label="item.id"
+                border>
+                {{`${item.type}：￥${item.price}/份×${customerList.length} 最高赔付${item.compensation}`}}
+              </el-checkbox>
+            </div>
 
 
           </el-checkbox-group>
-
-
 
 
         </div>
@@ -76,12 +87,28 @@
       <div class="air-column">
         <h2>联系人</h2>
         <div class="contact">
-          <el-form label-width="60px">
-            <el-form-item label="姓名">
+          <el-form label-width="60px" :model="{
+            contactPerson,
+            contactNum,
+            yanzhengma
+          }"
+                   ref="contactForm"
+          >
+            <el-form-item label="姓名"
+                          prop="contactPerson"
+                          :rules="[
+                            {required:true,message:'联系人不可以为空！',trigger:'blur'}
+                          ]"
+            >
               <el-input v-model="contactPerson"></el-input>
             </el-form-item>
 
-            <el-form-item label="手机">
+            <el-form-item label="手机"
+                          prop="contactNum"
+                          :rules="[
+                            {required:true,message:'请输入合法的手机号！',trigger:'blur',pattern: /^0?(13|14|15|18|17)[0-9]{9}$/}
+                          ]"
+            >
               <el-input placeholder="请输入内容" v-model="contactNum">
                 <template slot="append">
                   <el-button @click="handleSendCaptcha">发送验证码</el-button>
@@ -89,11 +116,17 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item label="验证码">
+            <el-form-item label="验证码"
+                          prop="yanzhengma"
+                          :rules="[
+                            {required:true,message:'验证码不能为空！',trigger:'blur'}
+                          ]"
+                          width="100px"
+            >
               <el-input v-model="yanzhengma"></el-input>
             </el-form-item>
           </el-form>
-          <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
+          <el-button type="warning" class="submit" @click="handleSubmit" ref="submitForm">提交订单</el-button>
         </div>
       </div>
     </div>
@@ -101,7 +134,7 @@
       :detailTicket="detailTicket"
       :totalPrice="totalPrice"
       :userLen="customerList.length"
-      :adultPrice = "adultPrice"
+      :adultPrice="adultPrice"
     />
   </div>
 </template>
@@ -116,52 +149,59 @@
     },
     data() {
       return {
-        customerList:[
-          {username: "",id: ""}
+        customerList: [
+          {username: "", id: ""}
         ],
         detailTicket: {},
-        rules:{
-          username:[
+        rules: {
+          username: [
             {
-              required:true,
-              message:"请输入你的真实姓名",
-              trigger:"blur"
+              required: true,
+              message: "请输入你的真实姓名",
+              trigger: "blur"
             }
           ],
-          id:[
+          id: [
             {
-              required:true,
+              required: true,
               message: "请输入正确的身份证号码",
               trigger: "blur"
             }
           ]
         },
-        insuranceList:[],
-        contactPerson:"",
-        contactNum:"",
-        yanzhengma:"",
-        // totalPrice:0,
-        adultPrice:0
+        insuranceList: [],
+        contactPerson: "",
+        contactNum: "",
+        yanzhengma: "",
+        // totalPrice: 0,
+        adultPrice: 0
       }
     },
     created() {
       this.$axios({
-        url:"/airs/" + this.$route.query.id,
-        params:{
-          seat_xid:this.$route.query.seat_xid
+        url: "/airs/" + this.$route.query.id,
+        params: {
+          seat_xid: this.$route.query.seat_xid
         }
-      }).then(res=>{
-        if(res.status === 200){
+      }).then(res => {
+        if (res.status === 200) {
           this.detailTicket = res.data;
           this.adultPrice = this.detailTicket.seat_infos.org_settle_price
         }
       })
     },
-    // watch:{
-    //   insuranceList(){
+    // watch: {
+    //   insuranceList() {
     //     this.computedTotalPrice();
     //   },
-    //   customerList:{
+    //   customerList: {
+    //     handler() {
+    //       console.log(2)
+    //       this.computedTotalPrice();
+    //     },
+    //     immediate: true
+    //   },
+    //   totalPrice:{
     //     handler(){
     //       this.computedTotalPrice();
     //     },
@@ -169,10 +209,10 @@
     //   }
     //
     // },
-    computed:{
-      totalPrice(){
+    computed: {
+      totalPrice() {
         let res = 0;
-        if(this.detailTicket.seat_infos){
+        if (this.detailTicket.seat_infos) {
           res += this.detailTicket.seat_infos.org_settle_price * this.customerList.length;
           this.detailTicket.insurances.forEach(element => {
             if (this.insuranceList.indexOf(element.id) !== -1) {
@@ -194,54 +234,65 @@
         this.customerList.push(newPer);
       },
       handleSendCaptcha() {
-        this.$axios({
-          url:"/captchas",
-          method:"post",
-          data:{
-            tel:this.contactNum
-          }
-        }).then(res=>{
-          if(res.status === 200){
-          this.$message.success("验证码为：" + res.data.code);
-          }
+        this.$refs.contactForm.validateField('contactNum',(errMsg)=>{
+          console.log(errMsg)
+        }).then(()=>{
+          this.$axios({
+            url: "/captchas",
+            method: "post",
+            data: {
+              tel: this.contactNum
+            }
+          }).then(res => {
+            if (res.status === 200) {
+              this.$message.success("验证码为：" + res.data.code);
+            }
+          })
         })
+
       },
-      handleSubmit() {
+      async handleSubmit() {
+        //表单提交之前要进行验证
+        let isValidUsersForm = await this.$refs.usersForm.validate().catch(e=>{});
+        let isValidContactForm = await this.$refs.contactForm.validate().catch(e=>{});
+        if (isValidUsersForm && isValidContactForm) {
         const data = {
-          users:this.customerList,
-          insurances:this.insuranceList,
-          contactName:this.contactPerson,
-          contactPhone:this.contactNum,
-          invoice:false,
-          seat_xid:this.$route.query.seat_xid,
-          air:this.$route.query.id,
+          users: this.customerList,
+          insurances: this.insuranceList,
+          contactName: this.contactPerson,
+          contactPhone: this.contactNum,
+          invoice: false,
+          seat_xid: this.$route.query.seat_xid,
+          air: this.$route.query.id,
           captcha: this.yanzhengma
         };
-        this.$axios({
-          url:"/airorders",
-          method:"post",
-          data,
-          headers:{
-            Authorization:"Bearer " + this.$store.state.user.userInfo.token
-          }
-        }).then(res=>{
-          console.log(res);
-        })
-      },
-      computedTotalPrice(){
-        let res = 0;
-        // console.log(this.detailTicket);
-        if(this.detailTicket.seat_infos){
-          res += this.adultPrice * this.customerList.length;
-          this.detailTicket.insurances.forEach(element => {
-            if (this.insuranceList.indexOf(element.id) !== -1) {
-              res += element.price * this.customerList.length;
+
+          this.$axios({
+            url: "/airorders",
+            method: "post",
+            data,
+            headers: {
+              Authorization: "Bearer " + this.$store.state.user.userInfo.token
             }
-          });
+          }).then(res => {
+            this.$router.push("/air/pay?id=" + res.data.data.id);
+          })
         }
-          this.totalPrice =  res;
-        console.log(0)
+
       }
+      // computedTotalPrice() {
+      //   let res = 0;
+      //   // console.log(this.detailTicket);
+      //   if (this.detailTicket.seat_infos) {
+      //     res += this.adultPrice * this.customerList.length;
+      //     this.detailTicket.insurances.forEach(element => {
+      //       if (this.insuranceList.indexOf(element.id) !== -1) {
+      //         res += element.price * this.customerList.length;
+      //       }
+      //     });
+      //   }
+      //   this.totalPrice = res;
+      // }
     }
 
   }

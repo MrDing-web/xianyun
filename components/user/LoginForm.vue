@@ -2,23 +2,23 @@
     <!-- 数据校验第一步, 表单整体绑定一个数据对象 -->
     <!-- 数据校验第二部, 表单绑定一个校验规则对象,
     里面跟数据对象一一对应 -->
-    <el-form 
-        :model="form" 
+    <el-form
+        :model="form"
         ref="form"
-        :rules="rules" 
+        :rules="rules"
         class="form">
 
         <!-- 给表单项指定对应的规则属性, 以字符串的形式设置在 prop 属性上 -->
         <el-form-item class="form-item" prop='username'>
-            <el-input 
+            <el-input
             placeholder="用户名/手机" v-model="form.username"
             @focus="clearMsg('username')">
             </el-input>
         </el-form-item>
 
         <el-form-item class="form-item" prop="password">
-            <el-input 
-            placeholder="密码" 
+            <el-input
+            placeholder="密码"
             type="password"
             v-model="form.password">
             </el-input>
@@ -28,7 +28,7 @@
             <nuxt-link to="#">忘记密码</nuxt-link>
         </p>
 
-        <el-button 
+        <el-button
         class="submit"
         type="primary"
         @click="handleLoginSubmit">
@@ -73,10 +73,10 @@ export default {
                     }
                 ],
                 password: [
-                    { 
-                        required: true, 
-                        message: '请输入密码', 
-                        trigger: 'blur' 
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
                     },
                 ],
             },
@@ -99,7 +99,7 @@ export default {
                     // 调用 mutations 是 commit
                     // 调用 actions 是 dispatch
                     console.log('开始登录');
-                    // 这里是调用 vuex 里面的异步函数, 
+                    // 这里是调用 vuex 里面的异步函数,
                     // 所以所有的请求结果都在 vuex 里面
                     // 如果想要得到这些请求结果其实是可以的
                     // 1. vuex action 将 promise 返回出来
@@ -129,7 +129,7 @@ export default {
             // }).catch(err=>{
             //     console.log(err);
             // })
-            
+
         },
         clearMsg(propName) {
             // 如果拿到一个数据的 prop 名字

@@ -31,7 +31,8 @@ export const actions = {
               // this.$store.commit('user/setUserInfo', res.data)
               commit('setUserInfo', res.data)
           }
-          return res
+          this.$router.push("/");
+          return res;
       })
   }
 };
