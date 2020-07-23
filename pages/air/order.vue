@@ -126,26 +126,40 @@
               <el-input v-model="yanzhengma"></el-input>
             </el-form-item>
           </el-form>
-          <el-button type="warning" class="submit" @click="handleSubmit" ref="submitForm">提交订单</el-button>
+          <el-button
+            type="warning"
+            class="submit"
+            @click="handleSubmit"
+            ref="submitForm"
+            :disabled="!checkToken"
+          >
+            {{checkToken?"提交订单":"请先登录"}}
+          </el-button>
         </div>
       </div>
     </div>
-    <OrderAside
-      :detailTicket="detailTicket"
-      :totalPrice="totalPrice"
-      :userLen="customerList.length"
-      :adultPrice="adultPrice"
-    />
+    <div>
+      <OrderAside
+        :detailTicket="detailTicket"
+        :totalPrice="totalPrice"
+        :userLen="customerList.length"
+        :adultPrice="adultPrice"
+      />
+      <LoginForm v-if="!checkToken"/>
+    </div>
+
   </div>
 </template>
 
 <script>
   import OrderAside from "~/components/air/orderAside";
+  import LoginForm from "~/components/user/LoginForm";
 
   export default {
     name: "order",
     components: {
-      OrderAside
+      OrderAside,
+      LoginForm
     },
     data() {
       return {
@@ -174,7 +188,9 @@
         contactNum: "",
         yanzhengma: "",
         // totalPrice: 0,
-        adultPrice: 0
+        adultPrice: 0,
+        token:"",
+        flag:false
       }
     },
     created() {
@@ -223,6 +239,9 @@
         }
 
       },
+      checkToken(){
+        return this.$store.state.user.userInfo.token;
+      }
     },
 
     methods: {
@@ -234,38 +253,41 @@
         this.customerList.push(newPer);
       },
       handleSendCaptcha() {
-        this.$refs.contactForm.validateField('contactNum',(errMsg)=>{
-          console.log(errMsg)
-        }).then(()=>{
-          this.$axios({
-            url: "/captchas",
-            method: "post",
-            data: {
-              tel: this.contactNum
-            }
-          }).then(res => {
-            if (res.status === 200) {
-              this.$message.success("验证码为：" + res.data.code);
-            }
-          })
+        this.$refs.contactForm.validateField('contactNum', (errMsg) => {
+          if (!errMsg) {
+            //校验成功，成功了才发验证码
+            this.$axios({
+              url: "/captchas",
+              method: "post",
+              data: {
+                tel: this.contactNum
+              }
+            }).then(res => {
+              if (res.status === 200) {
+                this.$message.success("验证码为：" + res.data.code);
+              }
+            })
+          }
         })
 
       },
       async handleSubmit() {
         //表单提交之前要进行验证
-        let isValidUsersForm = await this.$refs.usersForm.validate().catch(e=>{});
-        let isValidContactForm = await this.$refs.contactForm.validate().catch(e=>{});
+        let isValidUsersForm = await this.$refs.usersForm.validate().catch(e => {
+        });
+        let isValidContactForm = await this.$refs.contactForm.validate().catch(e => {
+        });
         if (isValidUsersForm && isValidContactForm) {
-        const data = {
-          users: this.customerList,
-          insurances: this.insuranceList,
-          contactName: this.contactPerson,
-          contactPhone: this.contactNum,
-          invoice: false,
-          seat_xid: this.$route.query.seat_xid,
-          air: this.$route.query.id,
-          captcha: this.yanzhengma
-        };
+          const data = {
+            users: this.customerList,
+            insurances: this.insuranceList,
+            contactName: this.contactPerson,
+            contactPhone: this.contactNum,
+            invoice: false,
+            seat_xid: this.$route.query.seat_xid,
+            air: this.$route.query.id,
+            captcha: this.yanzhengma
+          };
 
           this.$axios({
             url: "/airorders",
@@ -299,6 +321,13 @@
 </script>
 
 <style scoped lang="less">
+  /deep/ .LoginForm{
+    border: 1px solid #409eff;
+    margin-top: 60px;
+    input{
+      border: 1px solid #409eff;
+    }
+  }
   .main {
     display: flex;
     justify-content: center;

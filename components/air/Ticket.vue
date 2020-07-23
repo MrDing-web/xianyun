@@ -47,7 +47,7 @@
             <el-col :span="16" class="flight-sell-left">
               <span>{{item.name}}</span> | {{item.supplierName}}
             </el-col>
-            <el-col :span="5" class="price">￥1345</el-col>
+            <el-col :span="5" class="price">￥{{item.settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
               <el-button :disabled="item.nums === 'A'" type="warning" size="mini" @click="orderTicket(item)">选定</el-button>
               <p v-if="item.nums !== 'A'">剩余：{{item.nums}}</p>
@@ -94,7 +94,6 @@
     },
     methods:{
       orderTicket(item){
-        this.$store.dispatch("detailTicket/saveTicket",this.ticket)
         this.$router.push({
           path:"/air/order",
           query:{

@@ -32,7 +32,8 @@
     name: "pay",
     data(){
       return{
-        orderData:{}
+        orderData:{},
+        timer:null
       }
     },
     watch: {
@@ -59,12 +60,77 @@
               // 1. 是需要显示二维码的 canvas
               // 2. 是需要变为二维码的字符串
               // 第三个是一个可选的配置对象, 其中 width 属性可以控制宽度
-              QRCode.toCanvas(this.$refs.canvas, this.orderData.payInfo.code_url, {width: 200})
+              QRCode.toCanvas(this.$refs.canvas, this.orderData.payInfo.code_url, {width: 200});
+              this.checkPay();
             })
           }
         },
         immediate: true
       }
+    },
+    methods:{
+      checkPay(){
+        this.$axios({
+          url:"/airorders/checkpay",
+          method:"post",
+          data:{
+            id:this.orderData.id,
+            nonce_str:this.orderData.price,
+            out_trade_no:this.orderData.payInfo.order_no
+          },
+          headers:{
+            Authorization:`Bearer ${this.$store.state.user.userInfo.token}`
+            // Authorization: "Bearer " + this.$store.state.user.userInfo.token
+          }
+        }).then(res=>{
+          console.log(res.data);
+          if(res.data.trade_state === 'NOTPAY') {
+            this.timer = setTimeout(() => {
+              this.checkPay()
+            }, 2000);
+          }else {
+            this.processPayState(res.data.trade_state)
+          }
+
+        })
+      },
+      processPayState(state) {
+        switch (state) {
+          case 'SUCCESS':
+            this.$message('支付已完成');
+            break;
+
+          case 'REFUND':
+            this.$message('转入退款');
+            break;
+
+          case 'NOTPAY':
+            this.$message('未支付');
+            break;
+
+          case 'CLOSED':
+            this.$message('已关闭');
+            break;
+
+          case 'REVOKED':
+            this.$message('已撤销');
+            break;
+
+          case 'USERPAYING':
+            this.$message('用户支付中');
+            break;
+
+          case 'PAYERROR':
+            this.$message('支付失败');
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    destroyed() {
+      // 跳出页面时应该销毁定时器, 避免堆积
+      clearTimeout(this.timer)
     }
   }
 </script>

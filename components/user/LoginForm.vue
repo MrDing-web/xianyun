@@ -6,7 +6,7 @@
         :model="form"
         ref="form"
         :rules="rules"
-        class="form">
+        class="form LoginForm">
 
         <!-- 给表单项指定对应的规则属性, 以字符串的形式设置在 prop 属性上 -->
         <el-form-item class="form-item" prop='username'>
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { mutations } from '../../store/user'
 export default {
     data(){
         return {
@@ -87,7 +86,6 @@ export default {
         handleLoginSubmit(){
             // 默认登录的用户名和密码是
             // 13800138000 : 123456
-            console.log(this.form)
 
             // 我们需要在发送之前进行一次总的校验复核一遍
             // 拿到表单对象, 直接调用他的方法, 传入回调
