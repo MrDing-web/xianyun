@@ -16,7 +16,7 @@
     "element-ui": "^2.13.2",
     "less": "^3.11.3",
     "less-loader": "^6.2.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "nuxt": "^2.13.0",
     "qrcode": "^1.4.4",
     "vuex-persistedstate": "^3.0.1"
